@@ -6,7 +6,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=mihomo
 PKG_VERSION:=1.18.6
-PKG_RELEASE:=1
+PKG_RELEASE:=4
 
 PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION).tar.gz
 PKG_SOURCE_URL:=https://codeload.github.com/MetaCubeX/mihomo/tar.gz/v$(PKG_VERSION)?
@@ -20,11 +20,15 @@ PKG_BUILD_DEPENDS:=golang/host
 PKG_BUILD_PARALLEL:=1
 PKG_BUILD_FLAGS:=no-mips16
 
-GO_PKG:=github.com/MetaCubeX/mihomo
-GO_PKG_LDFLAGS_X:=$(GO_PKG)/constant.Version=$(PKG_VERSION)
+GO_PKG:=github.com/metacubex/mihomo
+GO_PKG_BUILD_PKG:=$(GO_PKG)
+GO_PKG_LDFLAGS_X:= \
+        $(GO_PKG)/constant.Version=v$(PKG_VERSION) \
+        $(GO_PKG)/constant.BuildTime=$(shell date "+%F-%T-%Z")
+GO_PKG_TAGS:=with_gvisor
 
 include $(INCLUDE_DIR)/package.mk
-include $(TOPDIR)/feeds/packages/lang/golang/golang-values.mk
+include $(TOPDIR)/feeds/packages/lang/golang/golang-package.mk
 
 define Package/mihomo
   SECTION:=net
@@ -51,14 +55,8 @@ define Package/mihomo/conffiles
 /etc/config/mihomo
 endef
 
-define Build/Prepare
-	$(call Build/Prepare/Default)
-	sed -i 's/^VERSION=.*/VERSION ?= $(PKG_VERSION)/' $(PKG_BUILD_DIR)/Makefile
-endef
-
 define Package/mihomo/install
-	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/mihomo-linux-$(GO_ARCH) $(1)/usr/bin/mihomo
+	$(call GoPackage/Package/Install/Bin,$(1))
 	
 	$(INSTALL_DIR) $(1)/etc/mihomo/
 	$(INSTALL_CONF) $(PKG_BUILD_DIR)/docs/config.yaml $(1)/etc/mihomo/example.yaml
