@@ -8,16 +8,13 @@ on:
 
 jobs:
   build:
-    name: Build OpenWrt-${{ matrix.arch }}-${{ matrix.version }}
+    name: Build ${{ matrix.arch }}
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         include:
           - arch: aarch64_generic
-            version: 23.05.3
-          - arch: aarch64_generic
-            version: snapshots
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4
@@ -41,20 +38,14 @@ jobs:
 
       - name: Build
         run: |
-          if [ ${{ matrix.version }} == "snapshots" ]; then
-            wget https://downloads.immortalwrt.org/snapshots/targets/rockchip/armv8/immortalwrt-sdk-rockchip-armv8_gcc-13.3.0_musl.Linux-x86_64.tar.zst -O sdk.tar.xz
-            wget https://downloads.immortalwrt.org/snapshots/targets/rockchip/armv8/config.buildinfo -O .config
-          else
-            wget https://downloads.immortalwrt.org/releases/${{ matrix.version }}/targets/rockchip/armv8/immortalwrt-sdk-${{ matrix.version }}-rockchip-armv8_gcc-12.3.0_musl.Linux-x86_64.tar.xz -O sdk.tar.xz
-            wget https://downloads.immortalwrt.org/releases/${{ matrix.version }}/targets/rockchip/armv8/config.buildinfo -O .config
-          fi
+          wget https://downloads.immortalwrt.org/snapshots/targets/rockchip/armv8/immortalwrt-sdk-rockchip-armv8_gcc-13.3.0_musl.Linux-x86_64.tar.zst -O sdk.tar.xz
 
           mkdir sdk
           tar -I zstd -xf sdk.tar.xz --strip-components=1 -C sdk
           cd sdk
           ./scripts/feeds update -a
           ./scripts/feeds install golang
-          mv ../.config .
+          wget https://downloads.immortalwrt.org/snapshots/targets/rockchip/armv8/config.buildinfo -O .config
           make defconfig
           cp -a ../net package/
           make package/net/mihomo/compile V=s
@@ -66,7 +57,7 @@ jobs:
       - name: Publishing to GitHub Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name:  OpenWrt-${{ matrix.arch }}-${{ matrix.version }}-${{ env.PKG_NAME }}
+          name: ${{ matrix.arch }}-${{ env.PKG_NAME }}
           path: |
             sdk/bin/packages/*/*/mihomo*.ipk
 
