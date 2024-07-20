@@ -57,7 +57,7 @@ jobs:
       - name: Publishing to GitHub Artifacts
         uses: actions/upload-artifact@v3
         with:
-          name: ${{ matrix.arch }}-${{ env.PKG_NAME }}
+          name: ${{ env.PKG_NAME }}
           path: |
             sdk/bin/packages/*/*/mihomo*.ipk
 

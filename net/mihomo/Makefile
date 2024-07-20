@@ -51,6 +51,11 @@ define Package/mihomo/conffiles
 /etc/config/mihomo
 endef
 
+define Build/Prepare
+	$(call Build/Prepare/Default)
+	sed -i 's/^VERSION=.*/VERSION ?= $(PKG_VERSION)/' $(PKG_BUILD_DIR)/Makefile
+endef
+
 define Package/mihomo/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/bin/mihomo-linux-$(GO_ARCH) $(1)/usr/bin/mihomo
