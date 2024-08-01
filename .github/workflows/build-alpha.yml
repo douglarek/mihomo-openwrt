@@ -90,7 +90,8 @@ jobs:
         with:
           repo_token: ${{ secrets.TOKEN }}
           file: sdk/bin/packages/*/*/mihomo*.ipk
-          tag: alpha
+          tag: release
           file_glob: true
+          overwrite: true
           body: |
             ${{ steps.read_release.outputs.RELEASE_BODY }}

@@ -33,7 +33,7 @@ Before packaging this project, I explored some usage methods, which can be refer
 
 ## Download
 
-You can download the latest release [here](https://github.com/douglarek/vanilla-mihomo/actions).
+You can download the latest release [here](https://github.com/douglarek/vanilla-mihomo/releases).
 
 #### I can't install the ipk due to dependency issues
 
