@@ -1,0 +1,76 @@
+name: Build Mihomo Alpha ipk
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  build:
+    name: Build ${{ matrix.arch }}
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: aarch64_generic
+    steps:
+      - name: Checkout source tree
+        uses: actions/checkout@v4
+
+      - name: Install deps
+        run: |
+          sudo apt update
+          sudo apt install build-essential clang flex bison g++ gawk \
+            gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev \
+            python3-setuptools rsync swig unzip zlib1g-dev file wget
+
+      - name: Generate build keys
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y signify-openbsd
+          signify-openbsd -G -n -c 'DO NOT USE - OpenWrt packages feed CI' -p packages_ci.pub -s packages_ci.sec
+          EOF=$(dd if=/dev/urandom bs=15 count=1 status=none | base64)
+          echo "KEY_BUILD<<$EOF" >> $GITHUB_ENV
+          cat packages_ci.sec >> $GITHUB_ENV
+          echo "$EOF" >> $GITHUB_ENV
+
+      - name: Get mihomo alpha
+        run: |
+          git clone https://github.com/MetaCubeX/mihomo.git -b Alpha
+          cd mihomo
+          VER="alpha.""$(git log -1 --format="%cd" --date=short | sed s/-//g)"."$(git rev-list --count HEAD)"."$(git rev-parse --short HEAD)"
+          HEAD_REF=$(git rev-parse HEAD)
+          echo "PKG_VER=$VER" >> $GITHUB_ENV
+          echo "HEAD_REF=$HEAD_REF" >> $GITHUB_ENV
+
+      - name: Build
+        run: |
+          wget https://downloads.immortalwrt.org/snapshots/targets/rockchip/armv8/immortalwrt-sdk-rockchip-armv8_gcc-13.3.0_musl.Linux-x86_64.tar.zst -O sdk.tar.xz
+
+          mkdir sdk
+          tar -I zstd -xf sdk.tar.xz --strip-components=1 -C sdk
+          cd sdk
+          ./scripts/feeds update -a
+          ./scripts/feeds install golang
+          wget https://downloads.immortalwrt.org/snapshots/targets/rockchip/armv8/config.buildinfo -O .config
+          make defconfig
+          cp -a ../net package/
+          mv package/net/mihomo/git.Makefile package/net/mihomo/Makefile
+          sed -i 's/PKG_VERSION:=alpha/PKG_VERSION:=${{ env.PKG_VER }}/g' package/net/mihomo/Makefile
+          sed -i 's/PKG_SOURCE_VERSION:=Alpha/PKG_SOURCE_VERSION:=${{ env.HEAD_REF }}/g' package/net/mihomo/Makefile
+          make package/net/mihomo/check FIXUP=1 V=s
+          make package/net/mihomo/compile V=s
+
+          FN=$(find bin/packages -name '*.ipk' | xargs basename)
+          echo "PKG_NAME=$FN" >> $GITHUB_ENV
+          cd -
+
+      - name: Publishing to GitHub Artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ env.PKG_NAME }}
+          path: |
+            sdk/bin/packages/*/*/mihomo*.ipk
+
