@@ -44,6 +44,7 @@ jobs:
           HEAD_REF=$(git rev-parse HEAD)
           echo "PKG_VER=$VER" >> $GITHUB_ENV
           echo "HEAD_REF=$HEAD_REF" >> $GITHUB_ENV
+          cd -
 
       - name: Build
         run: |
@@ -74,3 +75,22 @@ jobs:
           path: |
             sdk/bin/packages/*/*/mihomo*.ipk
 
+      - name: Read release.md and use it as a body of new release
+        id: read_release
+        shell: bash
+        run: |
+          r=$(cat README.md)
+          r="${r//'%'/'%25'}"
+          r="${r//$'\n'/'%0A'}"
+          r="${r//$'\r'/'%0D'}"
+          echo "RELEASE_BODY=$r" >> $GITHUB_OUTPUT
+
+      - name: Publishing to GitHub Releases
+        uses: svenstaro/upload-release-action@v2
+        with:
+          repo_token: ${{ secrets.TOKEN }}
+          file: sdk/bin/packages/*/*/mihomo*.ipk
+          tag: alpha
+          file_glob: true
+          body: |
+            ${{ steps.read_release.outputs.RELEASE_BODY }}
