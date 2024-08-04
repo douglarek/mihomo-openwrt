@@ -83,6 +83,15 @@ jobs:
           r="${r//$'\r'/'%0D'}"
           echo "RELEASE_BODY=$r" >> $GITHUB_OUTPUT
 
+      - name: Delete old release assets
+        uses: mknejp/delete-release-assets@v1
+        with:
+          token: ${{ secrets.TOKEN }}
+          tag: release
+          assets: |
+            mihomo_alpha*.ipk
+
+
       - name: Publishing to GitHub Releases
         uses: svenstaro/upload-release-action@v2
         with:
