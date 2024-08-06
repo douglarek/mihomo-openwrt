@@ -5,6 +5,10 @@ on:
   schedule:
     - cron: '0 */2 * * *'
 
+permissions:
+  actions: write
+  contents: write
+
 jobs:
   build:
     name: Build ${{ matrix.arch }}
@@ -96,7 +100,7 @@ jobs:
       - name: Publishing to GitHub Releases
         uses: svenstaro/upload-release-action@v2
         with:
-          repo_token: ${{ secrets.TOKEN }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: sdk/bin/packages/*/*/mihomo*.ipk
           tag: release
           file_glob: true
