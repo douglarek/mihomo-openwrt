@@ -75,6 +75,6 @@ jobs:
           file: sdk/bin/packages/*/*/mihomo*.ipk
           tag: release
           file_glob: true
-          make_latest: false
+          overwrite: true
           body: |
             ${{ steps.read_release.outputs.RELEASE_BODY }}
