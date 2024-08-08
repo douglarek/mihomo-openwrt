@@ -64,7 +64,7 @@ jobs:
           mv package/net/mihomo/git.Makefile package/net/mihomo/Makefile
           sed -i 's/PKG_VERSION:=alpha/PKG_VERSION:=${{ env.PKG_VER }}/g' package/net/mihomo/Makefile
           sed -i 's/PKG_SOURCE_VERSION:=Alpha/PKG_SOURCE_VERSION:=${{ env.HEAD_REF }}/g' package/net/mihomo/Makefile
-          make package/net/mihomo/check FIXUP=1 V=s
+          make package/net/mihomo/{download,check} FIXUP=1 V=s
           make package/net/mihomo/compile V=s
 
           FN=$(find bin/packages -name '*.ipk' | xargs basename)
