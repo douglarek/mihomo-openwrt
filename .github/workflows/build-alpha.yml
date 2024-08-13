@@ -51,7 +51,8 @@ jobs:
 
       - name: Build
         run: |
-          wget https://downloads.immortalwrt.org/snapshots/targets/rockchip/armv8/immortalwrt-sdk-rockchip-armv8_gcc-13.3.0_musl.Linux-x86_64.tar.zst -O sdk.tar.xz
+          SDK=$(curl -s -L https://downloads.immortalwrt.org/snapshots/targets/rockchip/armv8/sha256sums | grep sdk | sed 's/.* \*//')
+          wget https://downloads.immortalwrt.org/snapshots/targets/rockchip/armv8/$SDK -O sdk.tar.xz
 
           mkdir sdk
           tar -I zstd -xf sdk.tar.xz --strip-components=1 -C sdk
