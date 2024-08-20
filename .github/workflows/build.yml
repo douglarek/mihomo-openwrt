@@ -39,6 +39,15 @@ jobs:
           cat packages_ci.sec >> $GITHUB_ENV
           echo "$EOF" >> $GITHUB_ENV
 
+      - name: Setup latest golang release
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+
+      - name: Show go version
+        run: |
+          go version
+
       - name: Get latest mihomo version
         run: |
           TAG=$(curl -s "https://api.github.com/repos/MetaCubeX/mihomo/tags" | jq -r '.[0].name' | tr -d 'v')
@@ -53,7 +62,6 @@ jobs:
           tar -I zstd -xf sdk.tar.xz --strip-components=1 -C sdk
           cd sdk
           ./scripts/feeds update -a
-          ./scripts/feeds install golang
           wget https://downloads.immortalwrt.org/snapshots/targets/rockchip/armv8/config.buildinfo -O .config
           make defconfig
           cp -a ../net package/
