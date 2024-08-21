@@ -1,4 +1,4 @@
-# Vanilla-Mihomo
+# Mihomo-OpenWrt
 
 A native build of [Mihomo](https://github.com/MetaCubeX/mihomo) designed specifically for OpenWrt and its derivatives without hearse scripts.
 
