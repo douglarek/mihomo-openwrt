@@ -16,8 +16,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - arch: aarch64_generic
+        arch: [aarch64_generic, x86_64]
+
     steps:
       - name: Checkout source tree
         uses: actions/checkout@v4
@@ -25,7 +25,7 @@ jobs:
       - name: Install deps
         run: |
           sudo apt update
-          sudo apt install build-essential clang flex bison g++ gawk \
+          sudo apt install -y build-essential clang flex bison g++ gawk \
             gcc-multilib g++-multilib gettext git libncurses5-dev libssl-dev \
             python3-setuptools rsync swig unzip zlib1g-dev file wget jq
 
@@ -55,14 +55,23 @@ jobs:
 
       - name: Build
         run: |
-          SDK=$(curl -s -L https://downloads.immortalwrt.org/snapshots/targets/rockchip/armv8/sha256sums | grep sdk | sed 's/.* \*//')
-          wget https://downloads.immortalwrt.org/snapshots/targets/rockchip/armv8/$SDK -O sdk.tar.xz
+          case "${{ matrix.arch }}" in
+            aarch64_generic)
+              TARGET_URL="https://downloads.immortalwrt.org/snapshots/targets/rockchip/armv8/"
+              ;;
+            x86_64)
+              TARGET_URL="https://downloads.immortalwrt.org/snapshots/targets/x86/64/"
+              ;;
+          esac
+
+          SDK=$(curl -s -L "${TARGET_URL}sha256sums" | grep sdk | sed 's/.* \*//')
+          wget "${TARGET_URL}${SDK}" -O sdk.tar.xz
 
           mkdir sdk
           tar -I zstd -xf sdk.tar.xz --strip-components=1 -C sdk
           cd sdk
           ./scripts/feeds update -a
-          wget https://downloads.immortalwrt.org/snapshots/targets/rockchip/armv8/config.buildinfo -O .config
+          wget "${TARGET_URL}config.buildinfo" -O .config
           make defconfig
           cp -a ../net package/
           sed -i 's/PKG_VERSION:=stable/PKG_VERSION:=${{ env.TAG }}/g' package/net/mihomo/Makefile
