@@ -16,10 +16,10 @@
 
 1. Obtain mihomo release
 
-        curl -L https://github.com/MetaCubeX/mihomo/releases/download/v1.18.6/mihomo-linux-arm64-v1.18.6.gz -o mihomo-linux-arm64-v1.18.6.gz
-        gzip -d mihomo-linux-arm64-v1.18.6.gz
-        chmod +x mihomo-linux-arm64-v1.18.6
-        mv mihomo-linux-arm64-v1.18.6 /usr/bin/mihomo
+        curl -L https://github.com/MetaCubeX/mihomo/releases/download/v1.18.8/mihomo-linux-amd64-v1.18.8.gz -o mihomo-linux-amd64-v1.18.8.gz
+        gzip -d mihomo-linux-amd64-v1.18.8.gz
+        chmod +x mihomo-linux-amd64-v1.18.8
+        mv mihomo-linux-amd64-v1.18.8 /usr/bin/mihomo
 
 2. Create the `/etc/config/mihomo` file and populate it
 
