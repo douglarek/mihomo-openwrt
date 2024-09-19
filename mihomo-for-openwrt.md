@@ -27,7 +27,7 @@
                 option enabled '1'
                 option user 'root'
                 option conffile '/etc/mihomo/config.yaml'
-                option workdir '/usr/share/mihomo'
+                option workdir '/etc/mihomo'
                 list ifaces 'wan'
                 option log_stderr '1'
                 option log_stdout '1'
