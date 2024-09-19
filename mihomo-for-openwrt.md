@@ -133,12 +133,12 @@
         external-controller: 0.0.0.0:9090 # If you can't handle it, it's not recommended to use 0.0.0.0 binding. for example, use your router address
         external-ui: ui
         external-ui-url: "https://mirror.ghproxy.com/https://github.com/MetaCubeX/metacubexd/archive/refs/heads/gh-pages.zip"
-        secret: "123654" # change to your own
+        secret: "123456" # change to your own
 
 
       After starting the mihomo service, use the API to download UI static files:
 
-        curl -H 'Authorization: Bearer 123654' http://127.0.0.1:9090/upgrade/ui -X POST
+        curl -H 'Authorization: Bearer 123456' http://127.0.0.1:9090/upgrade/ui -X POST
 
       If there are no errors, it will return a successful download status:
 
