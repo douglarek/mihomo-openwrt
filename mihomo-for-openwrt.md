@@ -146,7 +146,7 @@
 
       Where did the UI download to? Take this article as an example:
 
-        /usr/share/mihomo/ui/
+        /etc/mihomo/ui/
 
 
       Finally, use the router address to access the UI:
