@@ -54,7 +54,7 @@
                 config_get user "main" "user" "root"
                 config_get conffile "main" "conffile"
                 config_get ifaces "main" "ifaces"
-                config_get workdir "main" "workdir" "/usr/share/mihomo"
+                config_get workdir "main" "workdir" "/etc/mihomo"
                 config_get_bool log_stdout "main" "log_stdout" "1"
                 config_get_bool log_stderr "main" "log_stderr" "1"
 
