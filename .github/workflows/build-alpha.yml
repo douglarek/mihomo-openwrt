@@ -3,7 +3,7 @@ name: Build Mihomo Alpha ipk
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */2 * * *'
+    - cron: "0 12 * * *"
 
 permissions:
   actions: write
