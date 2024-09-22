@@ -3,7 +3,7 @@ name: Build Mihomo ipk
 on:
   workflow_dispatch:
   schedule:
-    - cron: '0 */6 * * *'
+    - cron: '0 12 * * *'
 
 permissions:
   actions: write
@@ -43,6 +43,7 @@ jobs:
         uses: actions/setup-go@v5
         with:
           go-version: 'stable'
+          cache: false          
 
       - name: Show go version
         run: |
