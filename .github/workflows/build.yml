@@ -2,8 +2,8 @@ name: Build Mihomo ipk
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: '0 12 * * *'
+  #schedule:
+    #- cron: '0 12 * * *'
 
 permissions:
   actions: write
