@@ -105,13 +105,15 @@ jobs:
           r="${r//$'\n'/'%0A'}"
           r="${r//$'\r'/'%0D'}"
           echo "RELEASE_BODY=$r" >> $GITHUB_OUTPUT
+          tag=$(date +"%Y%m%d")
+          echo "RELEASE_TAG=$tag" >> $GITHUB_OUTPUT
 
       - name: Delete old release assets
         uses: mknejp/delete-release-assets@v1
         continue-on-error: true
         with:
           token: ${{ secrets.REPO_TOKEN }}
-          tag: release
+          tag: ${{ steps.read_release.outputs.RELEASE_TAG }}
           assets: |
             mihomo_alpha*_${{ matrix.arch }}.ipk
 
@@ -120,7 +122,7 @@ jobs:
         with:
           repo_token: ${{ secrets.REPO_TOKEN }}
           file: sdk/bin/packages/*/*/mihomo*.ipk
-          tag: release
+          tag: ${{ steps.read_release.outputs.RELEASE_TAG }}
           file_glob: true
           overwrite: true
           body: |
