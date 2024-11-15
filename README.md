@@ -35,13 +35,13 @@ Before packaging this project, I explored some usage methods, which can be refer
 
 You can download the latest release [here](https://github.com/douglarek/vanilla-mihomo/releases). Don't worry about the release time, it will always be the latest.
 
-#### I can't install the ipk due to dependency issues
+#### I can't install the.apk due to dependency issues
 
 This is normal because the mihomo package itself relies on the kernel kmod. Different builds of the kernel kmod may have different versions, and if they differ, installation will fail. However, we can manually install the current system version of kmod and ignore dependencies when installing mihomo.
 
 ```
-opkg install kmod-tun kmod-inet-diag kmod-netlink-diag # Manual installation
-opkg install mihomo*.ipk --nodeps
+apk install kmod-tun kmod-inet-diag kmod-netlink-diag # Manual installation
+apk install mihomo*.apk --nodeps
 ```
 
 It is normal to encounter the following error during installation, which indicates that the package has been installed successfully.

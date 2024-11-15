@@ -1,4 +1,4 @@
-name: Build Mihomo Alpha ipk
+name: Build Mihomo Alpha.apk
 
 on:
   workflow_dispatch:
@@ -79,12 +79,12 @@ jobs:
           make defconfig
           cp -a ../net package/
           mv package/net/mihomo/git.Makefile package/net/mihomo/Makefile
-          sed -i 's/PKG_VERSION:=alpha/PKG_VERSION:=${{ env.PKG_VER }}/g' package/net/mihomo/Makefile
+          sed -i 's/PKG_VERSION:=alpha/PKG_VERSION:=9999/g' package/net/mihomo/Makefile
           sed -i 's/PKG_SOURCE_VERSION:=Alpha/PKG_SOURCE_VERSION:=${{ env.HEAD_REF }}/g' package/net/mihomo/Makefile
           make package/net/mihomo/{download,check} FIXUP=1 V=s
           make package/net/mihomo/compile V=s
 
-          FN=$(find bin/packages -name '*.ipk' | xargs basename)
+          FN=$(find bin/packages -name '*.apk' | sort | head -1 | xargs basename)
           echo "PKG_NAME=$FN" >> $GITHUB_ENV
           cd -
 
@@ -93,7 +93,7 @@ jobs:
         with:
           name: ${{ env.PKG_NAME }}
           path: |
-            sdk/bin/packages/*/*/mihomo*.ipk
+            sdk/bin/packages/*/*/mihomo*.apk
 
       - name: Read release.md and use it as a body of new release
         id: read_release
@@ -114,13 +114,13 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.read_release.outputs.RELEASE_TAG }}
           assets: |
-            mihomo_alpha*_${{ matrix.arch }}.ipk
+            mihomo_alpha*_${{ matrix.arch }}.apk
 
       - name: Publishing to GitHub Releases
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: sdk/bin/packages/*/*/mihomo*.ipk
+          file: sdk/bin/packages/*/*/mihomo*.apk
           tag: ${{ steps.read_release.outputs.RELEASE_TAG }}
           file_glob: true
           overwrite: true

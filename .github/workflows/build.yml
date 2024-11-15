@@ -1,4 +1,4 @@
-name: Build Mihomo ipk
+name: Build Mihomo.apk
 
 on:
   workflow_dispatch:
@@ -80,7 +80,7 @@ jobs:
           cat package/net/mihomo/Makefile
           make package/net/mihomo/compile V=s
 
-          FN=$(find bin/packages -name '*.ipk' | xargs basename)
+          FN=$(find bin/packages -name '*.apk' | sort | head -1 | xargs basename)
           echo "PKG_NAME=$FN" >> $GITHUB_ENV
           cd -
 
@@ -89,7 +89,7 @@ jobs:
         with:
           name: ${{ env.PKG_NAME }}
           path: |
-            sdk/bin/packages/*/*/mihomo*.ipk
+            sdk/bin/packages/*/*/mihomo*.apk
 
       - name: Read release.md and use it as a body of new release
         id: read_release
@@ -108,7 +108,7 @@ jobs:
         uses: svenstaro/upload-release-action@v2
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
-          file: sdk/bin/packages/*/*/mihomo*.ipk
+          file: sdk/bin/packages/*/*/mihomo*.apk
           tag: ${{ steps.read_release.outputs.RELEASE_TAG }}
           file_glob: true
           overwrite: true
