@@ -84,6 +84,7 @@ jobs:
           make package/net/mihomo/{download,check} FIXUP=1 V=s
           make package/net/mihomo/compile V=s
 
+          find bin/packages -name '*.apk' -exec sh -c 'mv "$1" "${1%.apk}_${{ matrix.arch }}.apk"' _ {} \;
           FN=$(find bin/packages -name '*.apk' | sort | head -1 | xargs basename)
           echo "PKG_NAME=$FN" >> $GITHUB_ENV
           cd -
