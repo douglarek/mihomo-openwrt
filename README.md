@@ -35,22 +35,22 @@ Before packaging this project, I explored some usage methods, which can be refer
 
 You can download the latest release [here](https://github.com/douglarek/vanilla-mihomo/releases). Don't worry about the release time, it will always be the latest.
 
-#### I can't install the.apk due to dependency issues
+#### Install
 
-This is normal because the mihomo package itself relies on the kernel kmod. Different builds of the kernel kmod may have different versions, and if they differ, installation will fail. However, we can manually install the current system version of kmod and ignore dependencies when installing mihomo.
-
-```
-apk install kmod-tun kmod-inet-diag kmod-netlink-diag # Manual installation
-apk install mihomo*.apk --nodeps
-```
-
-It is normal to encounter the following error during installation, which indicates that the package has been installed successfully.
+> [!IMPORTANT]
+> Starting from November 2024, OpenWrt will use the apk package manager by default. Sorry, this project will only support building APK packages and will no longer support IPK.
 
 ```
-Installing mihomo (1.18.6-r1) to root...
-Configuring mihomo.
-Collected errors:
- * pkg_hash_check_unresolved: cannot find dependency kernel (= 6.6.39~d8d97f68b06125f9b2a13d44b337b50f-r1) for kmod-tun
- * pkg_hash_check_unresolved: cannot find dependency kernel (= 6.6.39~d8d97f68b06125f9b2a13d44b337b50f-r1) for kmod-inet-diag
- * pkg_hash_check_unresolved: cannot find dependency kernel (= 6.6.39~d8d97f68b06125f9b2a13d44b337b50f-r1) for kmod-netlink-diag
+$ apk add mihomo-1.18.10-r1_aarch64_generic.apk --allow-untrusted
+(1/4) Installing kmod-inet-diag (6.6.60-r1)
+Executing kmod-inet-diag-6.6.60-r1.post-install
+(2/4) Installing kmod-netlink-diag (6.6.60-r1)
+Executing kmod-netlink-diag-6.6.60-r1.post-install
+(3/4) Installing kmod-tun (6.6.60-r1)
+Executing kmod-tun-6.6.60-r1.post-install
+(4/4) Installing mihomo (1.18.10-r1)
+Executing mihomo-1.18.10-r1.post-install
+OK: 222 MiB in 241 packages
 ```
+
+The APK package manager will automatically install the corresponding kernel module dependencies.
