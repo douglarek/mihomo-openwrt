@@ -52,7 +52,7 @@ jobs:
         run: |
           git clone https://github.com/MetaCubeX/mihomo.git -b Alpha
           cd mihomo
-          VER="alpha.$(git log -1 --format="%cd" --date=short | sed 's/-//g').$(git rev-list --count HEAD).$(git rev-parse --short HEAD)"
+          VER=$(git log -1 --format="%cd" --date=format:'%Y%m%d%H%M%S' | sed s/-//g)
           echo "PKG_VER=$VER" >> $GITHUB_ENV
           echo "HEAD_REF=$(git rev-parse HEAD)" >> $GITHUB_ENV
           cd -
@@ -79,7 +79,7 @@ jobs:
           make defconfig
           cp -a ../net package/
           mv package/net/mihomo/git.Makefile package/net/mihomo/Makefile
-          sed -i 's/PKG_VERSION:=alpha/PKG_VERSION:=9999/g' package/net/mihomo/Makefile
+          sed -i 's/PKG_VERSION:=alpha/PKG_VERSION:=${{ env.PKG_VER }}/g' package/net/mihomo/Makefile
           sed -i 's/PKG_SOURCE_VERSION:=Alpha/PKG_SOURCE_VERSION:=${{ env.HEAD_REF }}/g' package/net/mihomo/Makefile
           make package/net/mihomo/{download,check} FIXUP=1 V=s
           make package/net/mihomo/compile V=s
@@ -115,7 +115,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ steps.read_release.outputs.RELEASE_TAG }}
           assets: |
-            mihomo_alpha*_${{ matrix.arch }}.apk
+            mihomo*_${{ matrix.arch }}.apk
 
       - name: Publishing to GitHub Releases
         uses: svenstaro/upload-release-action@v2
