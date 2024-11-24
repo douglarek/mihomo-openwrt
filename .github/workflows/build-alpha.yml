@@ -108,15 +108,6 @@ jobs:
           tag=$(date +"%Y%m%d")
           echo "RELEASE_TAG=$tag" >> $GITHUB_OUTPUT
 
-      - name: Delete old release assets
-        uses: mknejp/delete-release-assets@v1
-        continue-on-error: true
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ steps.read_release.outputs.RELEASE_TAG }}
-          assets: |
-            mihomo*_${{ matrix.arch }}.apk
-
       - name: Publishing to GitHub Releases
         uses: svenstaro/upload-release-action@v2
         with:
