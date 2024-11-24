@@ -52,7 +52,7 @@ jobs:
         run: |
           git clone https://github.com/MetaCubeX/mihomo.git -b Alpha
           cd mihomo
-          VER=$(git log -1 --format="%cd" --date=format:'%Y%m%d%H%M%S' | sed s/-//g)
+          VER="$(git log -1 --format="%cd" --date=format:'%Y%m%d%H%M%S' | sed s/-//g)"~"$(git rev-parse --short HEAD)"
           echo "PKG_VER=$VER" >> $GITHUB_ENV
           echo "HEAD_REF=$(git rev-parse HEAD)" >> $GITHUB_ENV
           cd -
@@ -108,6 +108,16 @@ jobs:
           tag=$(date +"%Y%m%d")
           echo "RELEASE_TAG=$tag" >> $GITHUB_OUTPUT
 
+      - name: Delete old release assets
+        uses: mknejp/delete-release-assets@v1
+        continue-on-error: true
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag: ${{ steps.read_release.outputs.RELEASE_TAG }}
+          assets: |
+            mihomo-[0-9]{14}\.[a-f0-9]{8}-*_${{ matrix.arch }}.apk
+
+
       - name: Publishing to GitHub Releases
         uses: svenstaro/upload-release-action@v2
         with:
@@ -115,6 +125,7 @@ jobs:
           file: sdk/bin/packages/*/*/mihomo*.apk
           tag: ${{ steps.read_release.outputs.RELEASE_TAG }}
           file_glob: true
+          asset_name: ${{ env.PKG_NAME }}
           overwrite: true
           body: |
             ${{ steps.read_release.outputs.RELEASE_BODY }}
