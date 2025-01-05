@@ -70,7 +70,7 @@ jobs:
           wget "${TARGET_URL}${SDK}" -O sdk.tar.xz
 
           mkdir sdk
-          tar -I zstd -xf sdk.tar.xz --strip-components=1 -C sdk
+          tar -xvf  sdk.tar.xz --strip-components=1 -C sdk
           cd sdk
           ./scripts/feeds update -a
           wget "${TARGET_URL}config.buildinfo" -O .config
