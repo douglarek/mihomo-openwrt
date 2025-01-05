@@ -45,9 +45,10 @@ jobs:
           go-version: 'stable'
           cache: false          
 
-      - name: Show go version
-        run: |
-          go version
+      - name: Setup latest golang release
+        uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
 
       - name: Get latest mihomo version
         run: |
