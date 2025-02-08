@@ -39,14 +39,22 @@ jobs:
           cat packages_ci.sec >> $GITHUB_ENV
           echo "$EOF" >> $GITHUB_ENV
 
-      - name: Setup latest golang release
-        run: |
-          go version        
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.20'  # 根据需要调整Go版本
 
-      - name: Get latest mihomo version
-        run: |
-          TAG=$(curl -s "https://api.github.com/repos/MetaCubeX/mihomo/tags" | jq -r '.[0].name' | tr -d 'v')
-          echo "TAG=$TAG" >> $GITHUB_ENV
+      - name: Generate go.sum
+        run: go mod tidy
+
+      - name: Cache Go modules
+        id: cache
+        uses: actions/cache@v3
+        with:
+          path: ~/go/pkg/mod
+          key: ${{ runner.os }}-go-${{ hashFiles('**/go.sum') }}
+          restore-keys: |
+            ${{ runner.os }}-go-
 
       - name: Build
         run: |
