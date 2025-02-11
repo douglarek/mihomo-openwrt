@@ -47,10 +47,10 @@ jobs:
         run: |
           case "${{ matrix.arch }}" in
             aarch64_generic)
-              TARGET_URL="https://downloads.immortalwrt.org/releases/23.05.4/targets/rockchip/armv8/"
+              TARGET_URL="https://downloads.openwrt.org/releases/23.05.5/targets/rockchip/armv8/"
               ;;
             x86_64)
-              TARGET_URL="https://downloads.immortalwrt.org/releases/23.05.4/targets/x86/64/"
+              TARGET_URL="https://downloads.openwrt.org/releases/23.05.5/targets/x86/64/"
               ;;
           esac
 
