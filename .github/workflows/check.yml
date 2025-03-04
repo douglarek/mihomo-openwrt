@@ -25,6 +25,6 @@ jobs:
           GH_TOKEN: ${{ secrets.REPO_TOKEN }}
           REPO: metacubex/mihomo
           BRANCH: master
-          MAKEFILE: mihomo/Makefile
+          MAKEFILE: net/mihomo/Makefile
           CREATE_PR: true
           SOURCE_URL: https://github.com/metacubex/mihomo/archive/refs/tags/v{{version}}.tar.gz
