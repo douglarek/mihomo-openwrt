@@ -57,10 +57,10 @@ jobs:
         run: |
           case "${{ matrix.arch }}" in
             aarch64_generic)
-              TARGET_URL="https://immortalwrt.kyarucloud.moe/snapshots/targets/rockchip/armv8/"
+              TARGET_URL="https://mirror.nju.edu.cn/immortalwrt/snapshots/targets/rockchip/armv8/"
               ;;
             x86_64)
-              TARGET_URL="https://immortalwrt.kyarucloud.moe/snapshots/targets/x86/64/"
+              TARGET_URL="https://mirror.nju.edu.cn/immortalwrt/snapshots/targets/x86/64/"
               ;;
           esac
 
