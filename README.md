@@ -4,7 +4,7 @@ A native build of [Mihomo](https://github.com/MetaCubeX/mihomo) designed specifi
 
 ## Prerequisites
 
-* OpenWrt/ImmortalWrt 23.05+
+* OpenWrt 25.12.2+
 
 ## Basic Requirements
 

@@ -108,8 +108,19 @@ jobs:
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: sdk/bin/packages/*/*/mihomo*.apk
-          tag: latest
+          tag: v${{ env.TAG }}
           file_glob: true
           overwrite: true
           body: |
             ${{ steps.read_release.outputs.RELEASE_BODY }}
+
+  cleanup:
+    name: Keep only 2 latest releases
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete old releases
+        run: |
+          gh release list --limit 100 | awk 'NR > 2 {print $3}' | xargs -I % gh release delete % --yes --cleanup-tag
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
