@@ -20,7 +20,7 @@ jobs:
 
     steps:
       - name: Checkout source tree
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Install deps
         run: |
@@ -40,7 +40,7 @@ jobs:
           echo "$EOF" >> $GITHUB_ENV
 
       - name: Setup latest golang release
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v6
         with:
           go-version: 'stable'
 
@@ -120,6 +120,9 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
       - name: Delete old releases
         run: |
           gh release list --limit 100 | awk 'NR > 2 {print $3}' | xargs -I % gh release delete % --yes --cleanup-tag
