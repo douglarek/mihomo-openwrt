@@ -22,7 +22,25 @@ jobs:
       - name: Checkout source tree
         uses: actions/checkout@v6
 
+      - name: Get latest mihomo version
+        run: |
+          TAG=$(curl -s "https://api.github.com/repos/MetaCubeX/mihomo/tags" | jq -r '.[0].name' | tr -d 'v')
+          echo "TAG=$TAG" >> $GITHUB_ENV
+
+      - name: Check if build already exists for this arch
+        id: check_existing
+        run: |
+          if gh release view "v${{ env.TAG }}" --json assets --jq '.assets[].name' 2>/dev/null | grep -q "${{ matrix.arch }}"; then
+            echo "SKIP_BUILD=true" >> $GITHUB_ENV
+            echo "Skipping build - release v${{ env.TAG }} already contains APK for ${{ matrix.arch }}"
+          else
+            echo "SKIP_BUILD=false" >> $GITHUB_ENV
+          fi
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Install deps
+        if: env.SKIP_BUILD != 'true'
         run: |
           sudo apt update
           sudo apt install -y build-essential clang flex bison g++ gawk \
@@ -30,6 +48,7 @@ jobs:
             python3-setuptools rsync swig unzip zlib1g-dev file wget jq
 
       - name: Generate build keys
+        if: env.SKIP_BUILD != 'true'
         run: |
           sudo apt-get update
           sudo apt-get install -y signify-openbsd
@@ -40,20 +59,18 @@ jobs:
           echo "$EOF" >> $GITHUB_ENV
 
       - name: Setup latest golang release
+        if: env.SKIP_BUILD != 'true'
         uses: actions/setup-go@v6
         with:
           go-version: 'stable'
 
       - name: Show go version
+        if: env.SKIP_BUILD != 'true'
         run: |
           go version
 
-      - name: Get latest mihomo version
-        run: |
-          TAG=$(curl -s "https://api.github.com/repos/MetaCubeX/mihomo/tags" | jq -r '.[0].name' | tr -d 'v')
-          echo "TAG=$TAG" >> $GITHUB_ENV
-
       - name: Build
+        if: env.SKIP_BUILD != 'true'
         run: |
           case "${{ matrix.arch }}" in
             aarch64_generic)
@@ -86,6 +103,7 @@ jobs:
           cd -
 
       - name: Publishing to GitHub Artifacts
+        if: env.SKIP_BUILD != 'true'
         uses: actions/upload-artifact@v7
         with:
           name: ${{ env.PKG_NAME }}
@@ -93,6 +111,7 @@ jobs:
             sdk/bin/packages/*/*/mihomo*.apk
 
       - name: Read release.md and use it as a body of new release
+        if: env.SKIP_BUILD != 'true'
         id: read_release
         shell: bash
         run: |
@@ -103,6 +122,7 @@ jobs:
           echo "RELEASE_BODY=$r" >> $GITHUB_OUTPUT
 
       - name: Publishing to GitHub Releases
+        if: env.SKIP_BUILD != 'true'
         continue-on-error: true
         uses: svenstaro/upload-release-action@v2
         with:
